@@ -345,11 +345,11 @@ const data = [
         const prodItem = document.querySelectorAll('.item')
 
         for (const item of prodItem) {
-            const price = parseFloat(item.querySelector('h4').innerText.replace('$', ''));
-            const quantity = parseInt(item.querySelector('.quantity').innerText);
-            totalPrice += price * quantity;
+            const price = parseFloat(item.querySelector('h4').innerText.replace('$', ''))
+            const quantity = parseInt(item.querySelector('.quantity').innerText)
+            totalPrice += price * quantity
         }
-        totalProducts.innerHTML = `$${totalPrice.toFixed(2)}`;
+        totalProducts.innerHTML = `$${totalPrice.toFixed(2)}`
     }
     
     const checkoutFromCart = () => {
