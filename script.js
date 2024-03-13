@@ -241,16 +241,15 @@ const data = [
     }
     ]
 
-
-
+    
     const display = document.querySelector('.container')
-    let cartToggle = document.querySelector('.icon')
-    let body = document.querySelector('body')
-    let exitButton = document.querySelector('.exit')
-    let cartItems = document.querySelector('.cartList')
-    let cartCounter = document.querySelector('.fa-cart-shopping span')
-    let totalProducts = document.querySelector('.display-tot')
-    let checkout = document.querySelector('.checkout')
+    const cartToggle = document.querySelector('.icon')
+    const body = document.querySelector('body')
+    const exitButton = document.querySelector('.exit')
+    const cartItems = document.querySelector('.cartList')
+    const cartCounter = document.querySelector('.fa-cart-shopping span')
+    const totalProducts = document.querySelector('.display-tot')
+    const checkout = document.querySelector('.checkout')
     
     const displayData = (products) => {
         for (let item of products) {
@@ -263,7 +262,7 @@ const data = [
                     <h3>$${item.price}</h3>
                     <button class="add-to-cart" data-id="${item.id}">Add to cart</button>
                 </div>
-            `;
+            `
             display.append(prods)
         }
     }
@@ -274,70 +273,87 @@ const data = [
     
     const addToCart = (id) => {
         let addProduct
-
+    
+        const existingCartItem = cartItems.querySelector(`.item[data-id="${id}"]`)
+        if (existingCartItem) {
+            const quantityElement = existingCartItem.querySelector('.quantity')
+            const quantity = parseInt(quantityElement.innerText)
+            quantityElement.innerText = quantity + 1
+            updateTotal(id)
+            return
+        }
+    
         for (let item of data) {
             if (item.id === id) {
-                addProduct = item;
-                break;
+                addProduct = item
+                break
             }
         }
     
         if (addProduct) {
-            cartCounter.innerHTML = parseInt(cartCounter.innerHTML) + 1;
+            cartCounter.innerHTML = parseInt(cartCounter.innerHTML) + 1
     
-            let cartProduct = document.createElement('div');
-            cartProduct.classList.add('item');
+            let cartProduct = document.createElement('div')
+            cartProduct.classList.add('item')
+            cartProduct.dataset.id = addProduct.id 
             cartProduct.innerHTML = `
                 <img src="${addProduct.image}">
                 <h4>$${addProduct.price}</h4>
-                
+               
                 <button class="increment-quantity">+</button>
                 <span class="quantity">1</span>
                 <button class="decrement-quantity">-</button>
+               
+
             `
     
             cartItems.append(cartProduct)
-
     
-            const incrementButton = cartProduct.querySelector('.increment-quantity');
-            const decrementButton = cartProduct.querySelector('.decrement-quantity');
-            const itemQuantity = cartProduct.querySelector('.quantity');
+            const incrementButton = cartProduct.querySelector('.increment-quantity')
+            const decrementButton = cartProduct.querySelector('.decrement-quantity')
+            const itemQuantity = cartProduct.querySelector('.quantity')
     
             incrementButton.addEventListener('click', () => {
                 increment(id, itemQuantity)
-            });
+            })
     
             decrementButton.addEventListener('click', () => {
                 decrement(id, itemQuantity)
             })
-
-            const increment = (id, itemQuantity) => {
-                let quantity = parseInt(itemQuantity.innerHTML)
-                itemQuantity.innerHTML = quantity + 1
-            }
-            
-            const decrement = (id, itemQuantity) => {
-                let quantity = parseInt(itemQuantity.innerHTML)
-                
-                if (quantity > 1) {
-                    itemQuantity.innerHTML = quantity - 1
-                } else {
-                    // prodInCart.remove();
-                }
-            
-            }
-            
         }
-
-                calcTotal();
-
-
+    
+        updateTotal(id)
     }
+    
+    const increment = (id, itemQuantity) => {
+        let quantity = parseInt(itemQuantity.innerHTML)
+        itemQuantity.innerHTML = quantity + 1
+        updateTotal(id)
+    }
+    
+    const decrement = (id, itemQuantity) => {
+        let quantity = parseInt(itemQuantity.innerHTML)
+    
+        if (quantity > 1) {
+            itemQuantity.innerHTML = quantity - 1
+            updateTotal(id) 
+        }
+    }
+    
+    const updateTotal = () => {
+        let totalPrice = 0
+        const prodItem = document.querySelectorAll('.item')
 
-
+        for (const item of prodItem) {
+            const price = parseFloat(item.querySelector('h4').innerText.replace('$', ''));
+            const quantity = parseInt(item.querySelector('.quantity').innerText);
+            totalPrice += price * quantity;
+        }
+        totalProducts.innerHTML = `$${totalPrice.toFixed(2)}`;
+    }
+    
     const checkoutFromCart = () => {
-
-        alert('Checkout from cart')
+        alert('Clear cart?')
         cartItems.innerHTML = ''
         cartCounter.innerHTML = '0'
         totalProducts.innerHTML = '$0.00'
@@ -346,8 +362,6 @@ const data = [
     
     checkout.addEventListener('click', checkoutFromCart)
     
-   
-
     const calcTotal = () => {
         let totalPrice = 0
         const cartItems = document.querySelectorAll('.item')
@@ -359,17 +373,11 @@ const data = [
         totalProducts.innerHTML = `$${totalPrice.toFixed(2)}`
     }
     
-    
-
-    cartToggle.addEventListener('click', toggleCart);
+    cartToggle.addEventListener('click', toggleCart)
     exitButton.addEventListener('click', () => {
         body.classList.remove('slideCart')
     })
     
-    checkout.addEventListener('click', () => {
-
-    })
-
     displayData(data)
     
     display.addEventListener('click', (e) => {
@@ -378,7 +386,4 @@ const data = [
             addToCart(parseInt(productId))
         }
     })
-   
     
- 
-   
